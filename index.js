@@ -49,17 +49,17 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 // Middleware to check authentication
-const checkAuth = (req, res, next) => {
-  if (oauth2Client.credentials) {
-    // Authenticated
-    next();
-  } else {
-    // Not authenticated
-    res.status(401).send({
-      error: "Authentication required",
-    });
-  }
-};
+// const checkAuth = (req, res, next) => {
+//   if (oauth2Client.credentials) {
+//     // Authenticated
+//     next();
+//   } else {
+//     // Not authenticated
+//     res.status(401).send({
+//       error: "Authentication required",
+//     });
+//   }
+// };
 
 app.get("/google", (req, res) => {
   const url = oauth2Client.generateAuthUrl({
@@ -114,7 +114,7 @@ app.get("/google/redirect", async (req, res) => {
 });
 
 app.post("/schedule_event", async (req, res) => {
-  const { start, end, summary, description, repeat, timeZone, gmailUsername } = req.body;
+  const { start, end, summary, description, repeat, gmailUsername } = req.body;
   const eventStartTime = start
     ? dayjs(start).toISOString()
     : dayjs().add(1, "day").startOf("hour").add(10, "minutes").toISOString();
@@ -127,11 +127,11 @@ app.post("/schedule_event", async (req, res) => {
       description: description || "Some event which is very very important",
       start: {
         dateTime: eventStartTime,
-        timeZone: timeZone || "UTC", 
+        timeZone: "UTC", 
       },
       end: {
         dateTime: eventEndTime,
-        timeZone: timeZone || "UTC", 
+        timeZone: "UTC", 
       },
       recurrence: repeat === "daily" ? ["RRULE:FREQ=DAILY"] : [],
     };
